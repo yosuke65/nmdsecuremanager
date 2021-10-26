@@ -19,7 +19,7 @@
 #------------------------------------------------
 *.code-workspace
 *.exec
-*gradle$
+*.gradle$
 *iml
 *.jks
 *.iws
