@@ -1,0 +1,21 @@
+apply from: "${rootProject.ext.scripts}/library/root-lib.gradle"
+apply from: "${rootProject.ext.scripts}/dagger-dependencies.gradle"
+//apply from: "${rootproject.ext.scripts}/common/test/unit-test.gradle"
+apply from: "${rootProject.ext.scripts}/common/test/reports/jacoco.gradle"
+apply plugin: 'kotlin-parcelize'
+
+dependencies {
+    implementation nmd.network
+    implementation nmd.base
+    implementation nmd.baseUI
+    implementation nmd.utils
+    implementation nmd.parser
+    implementation okhttp3.core
+    implementation okhttp3.urlconnection
+//    implementation transmit.core, {
+//        transitive = false
+//    }
+}
+
+
+

@@ -1,0 +1,20 @@
+#EditorConfig:http://EditorConfig.org
+
+#top-most EditorConfig file
+root=true
+
+#Unix-style newlines with a newline ending every file
+[*]
+end_of_line = lf
+insert_final_newline = true
+
+[*.{json, yml}]
+indent_style=space
+indent_size=2
+
+[*.{kt, kts}]
+#possible values: number (e.g.2),"unset"(makes ktlint ignore indentation completely)
+indent_size=4
+disabled_rules=import-ordering
+#true(recommended) / false
+insert_final_newline=true

@@ -1,0 +1,17 @@
+ext {
+    scripts = getScriptsPath()
+}
+
+def getScriptsPath() {
+    def inModulePath = file("modules/nmdgradledependencies/scripts")
+    def omniPath = file("${project.rootDir}/../nmdgradledependencies/scripts")
+    def path = ""
+    if(inModulePath.exists()) {
+        path = inModulePath.absolutePath
+    } else if(omniPath.exists()) {
+        path = omniPath.absolutePath
+    } else {
+        println("'scripts' folder was not found")
+    }
+    return path
+}

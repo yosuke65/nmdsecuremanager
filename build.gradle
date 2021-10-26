@@ -1,0 +1,117 @@
+buildscript {
+    apply from: "$project.rootDir/scripts-path.gradle"
+    apply from:"${rootProject.ext.scripts}/version.gradle"
+    addRepos(repositories)
+//    repositories {
+//        google()
+//        jcenter()
+//    }
+    dependencies {
+        // Build Android Tools
+        classpath "com.android.tools.build:gradle:$_androidTools"
+        classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$detektVersion"
+//        classpath "com.google.gms:google-services:$googleServices"
+        if (enableAppDynamics) {
+            //App Dynamics
+            classpath "com.appdynamics:appdynamics-gradle-plugin:$appDynamics"
+        }
+        //Kotlin
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "com.diffplug.spotless:spotless-plugin-gradle:$spotlessVersion"
+        classpath "com.apollographql.apollo:apollo-gradle-plugin:$apolloVersion"
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:$gradlelnfoExtractorVersion"
+    }
+}
+
+apply from: "${rootProject.ext.scripts}/library/artifacts/artifacts-versioning.gradle"
+apply from: "${rootProject.ext.scripts}/application/build-versioning.gradle"
+
+allprojects {
+    addRepos(repositories)
+//    repositories {
+//        google()
+//        jcenter()
+//    }
+}
+
+wrapper{
+    gradleVersion = gradleVer
+}
+
+task publishRootDoc {
+    doLast {
+        def dirs = []
+        file('docs').listFiles({ file ->
+            file.isDirectory()
+        } as FileFilter).each {
+            dirs << "'${it.getName()}'"
+        }
+        file('docs/_js/dirs.js').text = "let dirs = $dirs;\n"
+    }
+}
+
+task errorGenerator {
+    doFirst {
+        def now = new Date().getTime()
+        logger.info('Generating error codes...')
+        logger.debug('python errorParser.py -a'.execute().text.trim())
+        logger.info("Auto generated error codes successfully in ${new Date().getTime() - now}ms\n")
+    }
+}
+
+afterEvaluate {
+    if (tasks.findByName('clean') == null) {
+        task clean(type: Delete) {
+            delete rootProject.buildDir
+        }
+    }
+}
+
+subprojects {
+    apply plugin: 'com.diffplug.gradle.spotless'
+    spotless {
+        kotlin {
+            target "**/*.kt"
+            ktlint(ktlint)
+            licenseHeaderFile "${rootProject.ext.scripts}/spotless/copyright.kt"
+        }
+        java {
+            target "**/*.java"
+            importOrder 'java', 'javax', 'org', 'com', 'com.diffplug', ' '
+            googleJavaFormat().aosp()
+            removeUnusedImports()
+            licenseHeaderFile "${rootProject.ext.scripts}/spotless/copyright.java"
+        }
+        format 'misc', {
+            target '**/*.gradle', '**|*.md', '**/.gitignore'
+            trimTrailingWhitespace()
+            indentWithSpaces(2) //or spaces. Takes an integer argument if you don't like 4
+            endWithNewline()
+        }
+        format 'xml', {
+            target '**/*.xml'
+            indentWithSpaces()
+            trimTrailingWhitespace()
+            endWithNewline()
+            //eclipseWtp('xml').cónfigFile("$project.rootDir/scripts/spotless/spotless.xml.prefs")
+        }
+    }
+}
+
+apply plugin: 'com.diffplug.gradle.spotless'
+spotless {
+    kotlin {
+        target "**/*.kts"
+        ktlint(ktlint)
+        licenseHeaderFile "${rootProject.ext.scripts}/spotless/copyright.kt"
+    }
+    format 'misc', {
+        target '**/*.gradle', '**/*.md', '**/.gitignore '
+        trimTrailingWhitespace()
+        indentWithSpaces(2) //or. spaces. Takes an integer argument if you don't like 4
+        endWithNewline()
+    }
+}
+gradle.startParameter.excludedTaskNames +='lint'
+gradle.startParameter.excludedTaskNames += 'test'
+//gradle.startParameter.excludedTaskNames +='javadocGen'

@@ -1,0 +1,31 @@
+include ":nmd-secure-login"
+rootProject.name = 'nmd-secure-manager'
+
+def isComposite = gradle.parent != null
+
+if(!isComposite) {
+    setup('.')
+    def inProjectBuild = startParameter.getProjectProperties().containsKey("inProjectBuild") && startParameter.getProjectProperties().get("inProjectBuild")
+    def path = "modules"
+    if(inProjectBuild && file(path).listFiles().findAll {it.directory && it.name.contains("nmd").isEmpty()}) {
+        path = "../..modules"
+    }
+    file(path).listFiles().findAll() {it.directory}.each { File moduleBuild ->
+        setup(moduleBuild.toString())
+        if(moduleBuild.toString().contains("nmd") && moduleBuild.name != rootDir.name) {
+            includeBuild moduleBuild
+        }
+    }
+}
+
+def setup(directory) {
+    exec {
+        workingDir directory
+        commandLine 'git', 'config', '--local', 'core.hooksPath', 'setup/hooks'
+    }
+    exec {
+        workingDir directory
+        commandLine 'git', 'update-index', '--assume-unchanged', '.idea/codeStyles/Project.xml', '.idea/workspace.xml'
+        ignoreExitValue true
+    }
+}

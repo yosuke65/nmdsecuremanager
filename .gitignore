@@ -1,0 +1,74 @@
+# Exclude dir/files
+#------------------------------------------------
+!keystore/Nomad-debug.keystore
+!keystore/debug.keystore
+.idea/*
+!/.idea/codeStyles/
+!/.idea/copyright/
+!/.idea/fileTemplates/
+!/.idea/scopes/
+!/.idea/encodings.xml
+!/.idea/kotlinc.xml
+!/.idea/codeStyleSettings.xml
+!/.idea/externalDepefdencies.xml
+!/.idea/file.template.settings.xml
+!/.idea/saveactions_settings.xml
+!/.idea/google-java-format.xml
+
+# File types
+#------------------------------------------------
+*.code-workspace
+*.exec
+*gradle$
+*iml
+*.jks
+*.iws
+*/log
+*.orig
+*/patch
+
+# Hidden directories or files
+#------------------------------------------------
+.classpath
+.DS_Store
+.externalNativeBuild
+.gradle
+.gradletasknamecache
+.gtm
+.idea_modules
+.navigation
+.project
+.scannerwork
+.settings
+.sonar
+.sonarlint
+.vscode
+.workspace
+
+# Directories or files
+#------------------------------------------------
+# Only at root
+#------------------------------------------------
+/captures/
+/docs/
+/fastlane/
+/fastlane/version.properties
+/reports/
+/Gemfile.lock
+/local.properties
+version.txt
+
+# Anywhere in repo
+#------------------------------------------------
+bin/
+gen/
+out/
+modules/
+proguard/
+
+# Match directories anywhere in repo
+#------------------------------------------------
+/**/aar/
+**/.settings/**
+**/build/**
+
